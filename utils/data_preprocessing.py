@@ -17,6 +17,6 @@ def plot_sample_images(X_train, y_train):
     for i in range(6):
         plt.subplot(2, 3, i+1)
         plt.imshow(X_train[i])
-        plt.title(y_train[i])
+        plt.title(y_train[i]) 
         plt.axis('off')
     plt.show()
