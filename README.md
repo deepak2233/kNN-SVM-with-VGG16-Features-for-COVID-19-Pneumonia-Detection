@@ -22,3 +22,40 @@ The required Python libraries can be installed via `requirements.txt`:
 
 ```bash
 pip install -r requirements.txt
+
+## Usage
+To run the pipeline, use the following command:
+
+```bash
+python main.py --data_dir <path_to_data> --batch_size 64 --epochs 20 --k_neighbors 7 --svm_c 0.5 --eda
+
+## Arguments:
+
+    --data_dir: Path to the directory containing the dataset (train/test split).
+    --img_size: Image size (default: 224).
+    --batch_size: Batch size for feature extraction and training (default: 32).
+    --epochs: Number of epochs for autoencoder training (default: 10).
+    --k_neighbors: Number of neighbors for kNN (default: 5).
+    --svm_c: SVM regularization parameter C (default: 1.0).
+    --eda: Flag to perform EDA (visualizations).
+
+## Results
+
+Upon training, the model outputs classification metrics such as precision, recall, F1-score, and accuracy.
+
+    Classification Report:
+                precision    recall  f1-score   support
+    COVID          0.98       0.97      0.97       100
+    Normal         0.96       0.98      0.97       100
+    -------------------------------------------------
+    Overall Accuracy: 0.97
+
+## Citation
+If you use this code for your research, please cite:
+@article{covid_knn_svm,
+  title={COVID-19 Pneumonia Detection Using kNN-SVM and VGG16 Features},
+  author={A Bahuguna, D Yadav, A Senapati, BN Saha},
+  journal={International Journal of Machine Learning and AI Research},
+  year={2024}
+}
+
