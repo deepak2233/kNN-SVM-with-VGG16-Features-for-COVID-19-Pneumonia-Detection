@@ -1,38 +1,22 @@
-import os
+from graphviz import Digraph
 
-def create_project_structure():
-    # Define the directories to create
-    dirs = [
-        "knn_svm_covid_detection/data/train",
-        "knn_svm_covid_detection/data/test",
-        "knn_svm_covid_detection/models",
-        "knn_svm_covid_detection/utils",
-        "knn_svm_covid_detection/notebooks"
-    ]
+def create_pipeline_visualization():
+    dot = Digraph(comment='VGG16 Feature Extraction Pipeline')
     
-    # Create the directories
-    for dir in dirs:
-        os.makedirs(dir, exist_ok=True)
+    # Nodes: Defining each step in the process
+    dot.node('A', 'Input: Image Data (X_train, X_test)')
+    dot.node('B', 'Preprocessing: Rescale, Resize (224x224)')
+    dot.node('C', 'VGG16: Pre-trained on ImageNet')
+    dot.node('D', 'Feature Extraction (Block 5 Pooling)')
+    dot.node('E', 'Extracted Features (X_train_features, X_test_features)')
     
-    # Create the files
-    files = [
-        "knn_svm_covid_detection/models/vgg16_feature_extractor.py",
-        "knn_svm_covid_detection/models/autoencoder.py",
-        "knn_svm_covid_detection/models/knn_svm_classifier.py",
-        "knn_svm_covid_detection/utils/data_loader.py",
-        "knn_svm_covid_detection/utils/data_preprocessing.py",
-        "knn_svm_covid_detection/notebooks/EDA.ipynb",
-        "knn_svm_covid_detection/main.py",
-        "knn_svm_covid_detection/README.md",
-        "knn_svm_covid_detection/requirements.txt"
-    ]
+    # Edges: Defining connections between steps
+    dot.edges(['AB', 'BC', 'CD', 'DE'])
     
-    # Create empty files
-    for file in files:
-        with open(file, 'w') as f:
-            pass
+    # Render the pipeline diagram
+    return dot
 
-if __name__ == "__main__":
-    create_project_structure()
-    print("Project structure created successfully!")
-
+# Create and render the diagram
+pipeline_diagram = create_pipeline_visualization()
+pipeline_diagram.render('model_pipeline', format='png', cleanup=True)  # Saves as 'model_pipeline.png'
+pipeline_diagram.view()
