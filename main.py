@@ -7,21 +7,26 @@ from models.knn_svm_classifier import knn_svm_classifier
 
 def main(args):
     # Load data
+    print("Loading data...")
     X_train, X_test, y_train, y_test = load_data(args.data_dir, img_size=(args.img_size, args.img_size))
 
     # EDA
     if args.eda:
+        print("Performing Exploratory Data Analysis...")
         visualize_data_distribution(y_train)
         plot_sample_images(X_train, y_train)
 
     # Feature extraction
+    print("Extracting features using VGG16...")
     X_train_features, X_test_features = extract_vgg16_features(X_train, X_test, batch_size=args.batch_size)
 
     # Dimensionality reduction with Autoencoder
+    print("Reducing dimensionality using Autoencoder...")
     X_train_reduced, X_test_reduced = apply_autoencoder(X_train_features, X_test_features, 
                                                         batch_size=args.batch_size, epochs=args.epochs)
 
     # Classification with kNN-SVM
+    print("Training kNN-SVM classifier...")
     knn_svm_classifier(X_train_reduced, X_test_reduced, y_train, y_test, k=args.k_neighbors, c=args.svm_c)
 
 if __name__ == '__main__':
@@ -40,5 +45,5 @@ if __name__ == '__main__':
     # Miscellaneous
     parser.add_argument('--eda', action='store_true', help='Perform exploratory data analysis')
 
-    args = parser.parse_args()
+    args = parser.parse_args() 
     main(args)
