@@ -22,12 +22,14 @@ The required Python libraries can be installed via `requirements.txt`:
 
 ```bash
 pip install -r requirements.txt
+```
 
 ## Usage
 To run the pipeline, use the following command:
 
 ```bash
 python main.py --data_dir <path_to_data> --batch_size 64 --epochs 20 --k_neighbors 7 --svm_c 0.5 --eda
+```
 
 ## Arguments:
 
