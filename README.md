@@ -3,19 +3,56 @@
 ## Overview
 This repository implements a novel COVID-19 Pneumonia detection system using a combination of deep feature extraction from chest X-rays via the VGG16 architecture and a kNN-SVM hybrid model for classification. The project is designed to scale easily for large datasets and features a flexible architecture that allows hyperparameter tuning via command-line arguments.
 
-## Pipeline
-1. **Data Preprocessing and Augmentation**: 
-   - Loads and preprocesses the chest X-ray dataset, including normalization and augmentation (e.g., flipping, resizing).
-2. **Exploratory Data Analysis (EDA)**: 
-   - Visualizes class distributions and image samples.
-3. **Feature Extraction**: 
-   - Uses the pre-trained VGG16 model to extract deep features from the input images.
-4. **Dimensionality Reduction**: 
-   - Applies an autoencoder to reduce the dimensionality of the extracted features while preserving important patterns.
-5. **Classification**: 
-   - Implements a kNN-regularized SVM classifier, combining the local sensitivity of kNN with the global stability of SVM.
-6. **Evaluation**: 
-   - Evaluates the model's performance using accuracy, precision, recall, and F1-score.
+## Model Pipeline
+
+      +------------------------------+
+      | 1. Data Preprocessing        |
+      |    and Augmentation          |
+      |  - Load Images               |
+      |  - Normalize                 |
+      |  - Data Augmentation         |
+      +------------------------------+
+                  |
+                  v
+      +------------------------------+
+      | 2. Exploratory Data Analysis |
+      |    (EDA)                     |
+      |  - Visualize Class Distributions|
+      |  - Visualize Sample Images    |
+      +------------------------------+
+                  |
+                  v
+      +------------------------------+
+      | 3. Feature Extraction        |
+      |    (VGG16)                   |
+      |  - Extract Features           |
+      |  - Transfer Learning          |
+      +------------------------------+
+                  |
+                  v
+      +------------------------------+
+      | 4. Dimensionality Reduction  |
+      |    (Autoencoder)             |
+      |  - Compress Features          |
+      |  - Preserve Key Patterns      |
+      +------------------------------+
+                  |
+                  v
+      +------------------------------+
+      | 5. Classification            |
+      |    (kNN-SVM)                 |
+      |  - Local Sensitivity (kNN)    |
+      |  - Global Stability (SVM)    |
+      +------------------------------+
+                  |
+                  v
+      +------------------------------+
+      | 6. Evaluation                |
+      |  - Accuracy                  |
+      |  - Precision                 |
+      |  - Recall                    |
+      |  - F1-Score                  |
+      +------------------------------+
 
 ## Features
 - **Transfer Learning**: Utilizes the pre-trained VGG16 model for deep feature extraction.
