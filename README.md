@@ -87,6 +87,10 @@ python main.py --data_dir <path_to_data> --batch_size 64 --epochs 20 --k_neighbo
 
 ## Results
 
+<p align = 'left'>
+  <img src = './utils/perfomance analysis.png' align = 'center'>
+</p>
+
 Upon training, the model outputs classification metrics such as precision, recall, F1-score, and accuracy.
 
     Classification Report:
