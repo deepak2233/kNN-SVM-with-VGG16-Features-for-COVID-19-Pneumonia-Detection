@@ -86,19 +86,12 @@ python main.py --data_dir <path_to_data> --batch_size 64 --epochs 20 --k_neighbo
     --eda: Flag to perform EDA (visualizations).
 
 ## Results
-
+Upon training, the model outputs classification metrics such as precision, recall, F1-score, and accuracy.
 <p align = 'left'>
   <img src = './utils/perfomance analysis.png' align = 'center'>
 </p>
 
-Upon training, the model outputs classification metrics such as precision, recall, F1-score, and accuracy.
 
-    Classification Report:
-                precision    recall  f1-score   support
-    COVID          0.98       0.97      0.97       100
-    Normal         0.96       0.98      0.97       100
-    -------------------------------------------------
-    Overall Accuracy: 0.97
 
 ## Citation
 If you use this code for your research, please cite:
