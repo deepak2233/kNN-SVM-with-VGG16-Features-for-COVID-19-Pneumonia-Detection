@@ -5,11 +5,11 @@ def autoencoder_model(input_shape):
     # Autoencoder architecture
     model = Sequential()
     model.add(Flatten(input_shape=input_shape))  # Flatten the input images
-    model.add(Dense(256, activation='relu'))  # Encoder part
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(64, activation='relu'))  # Bottleneck layer (compression)
-    model.add(Dense(128, activation='relu'))  # Decoder part
-    model.add(Dense(256, activation='relu'))
+    model.add(Dense(256, activation='relu', name='dense_1'))  # Encoder part
+    model.add(Dense(128, activation='relu', name='dense_2'))
+    model.add(Dense(64, activation='relu', name='dense_3'))  # Bottleneck layer (compression)
+    model.add(Dense(128, activation='relu', name='dense_4'))  # Decoder part
+    model.add(Dense(256, activation='relu', name='dense_5'))
     model.add(Reshape(input_shape))  # Reshape back to original input shape
     
     return model
@@ -23,7 +23,7 @@ def apply_autoencoder(X_train, X_test, batch_size=32, epochs=10):
     autoencoder.fit(X_train, X_train, epochs=epochs, batch_size=batch_size, validation_data=(X_test, X_test))
 
     # Create encoder model (up to the bottleneck layer for dimensionality reduction)
-    encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('dense_2').output)
+    encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('dense_3').output)
 
     # Extract compressed features
     X_train_reduced = encoder.predict(X_train, batch_size=batch_size)
