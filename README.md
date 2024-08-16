@@ -92,6 +92,11 @@ Upon training, the model outputs classification metrics such as precision, recal
 </p>
 
 
+<p align = 'left'>
+  <img src = './utils/curves.png' align = 'center'>
+</p>
+
+
 
 ## Citation
 If you use this code for your research, please cite:
