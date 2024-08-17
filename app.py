@@ -1,12 +1,13 @@
 import streamlit as st
 import numpy as np
-from tensorflow.keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
-from models.vgg16_feature_extractor import extract_vgg16_features_from_generator
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.models import Model
+import matplotlib.pyplot as plt
+import seaborn as sns
 from models.autoencoder import apply_autoencoder
 from models.knn_svm_classifier import KNNSVMClassifier
 from sklearn.metrics import confusion_matrix, classification_report
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Streamlit app title
 st.title("COVID-19 Detection from X-ray Images")
@@ -18,6 +19,12 @@ This app classifies X-ray images into three categories: Normal, COVID-19, or Pne
 # File uploader widget
 uploaded_file = st.file_uploader("Upload an X-ray image (jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
 
+def extract_features(image_array):
+    model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+    model = Model(inputs=model.input, outputs=model.layers[-1].output)
+    features = model.predict(np.expand_dims(image_array, axis=0))
+    return features
+
 if uploaded_file is not None:
     # Display uploaded image
     st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
@@ -26,33 +33,25 @@ if uploaded_file is not None:
     # Load the image and preprocess it
     image = load_img(uploaded_file, target_size=(224, 224))
     image_array = img_to_array(image)
-    image_array = np.expand_dims(image_array, axis=0)
+    image_array /= 255.0  # Normalization
 
-    # Preprocess the image for feature extraction
-    datagen = ImageDataGenerator(rescale=1.0/255)
-    generator = datagen.flow(image_array, batch_size=1)
-
-    # Since we are processing only one image, set steps=1 manually
-    features = extract_vgg16_features_from_generator(generator, steps=1)
+    # Extract features using VGG16
+    features = extract_features(image_array)
 
     # Apply Autoencoder for dimensionality reduction
     _, reduced_features = apply_autoencoder(features, features)
 
     # Initialize kNN-SVM classifier and predict
     classifier = KNNSVMClassifier(k=5, kernel='linear')
-    pred_class = classifier.predict(reduced_features)
+    pred_class = classifier.predict(reduced_features.reshape(1, -1))  # Ensure 2D input
 
     # Display prediction result
-    if pred_class == 0:
-        st.write("Prediction: **Normal**")
-    elif pred_class == 1:
-        st.write("Prediction: **COVID-19**")
-    else:
-        st.write("Prediction: **Pneumonia**")
+    prediction_map = {0: "Normal", 1: "COVID-19", 2: "Pneumonia"}
+    st.write(f"Prediction: **{prediction_map[pred_class[0]]}**")
 
     # Display confusion matrix (for demo purposes, here is an example)
     st.write("### Confusion Matrix")
-    true_class = [1]  # Example true class, adjust this based on real labels if available
+    true_class = np.array([1])  # Example true class
     cm = confusion_matrix(true_class, pred_class)  # Replace with actual values for evaluation
     fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, fmt="d", ax=ax)
