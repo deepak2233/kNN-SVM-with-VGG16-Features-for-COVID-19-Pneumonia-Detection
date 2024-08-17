@@ -8,14 +8,14 @@ from utils.data_preprocessing import visualize_data_distribution, plot_sample_im
 from models.vgg16_feature_extractor import extract_vgg16_features_from_generator
 from models.autoencoder import apply_autoencoder
 from sklearn.metrics import classification_report, confusion_matrix
-from models.knn_svm_classifier import KNNSVMClassifier  # Corrected import
+from models.knn_svm_classifier import KNNSVMClassifier
+import joblib  # To save the SVM model
 
 # Suppress TensorFlow warnings related to GPU and minor issues
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress INFO and WARNING messages
 tf.get_logger().setLevel('ERROR')  # Suppress TensorFlow internal logging
 warnings.filterwarnings("ignore", category=UserWarning, message=".*?CUDA.*?")  # Suppress CUDA-related warnings
 
-# Check GPU availability
 def check_gpu():
     gpus = tf.config.list_physical_devices('GPU')
     if gpus:
@@ -32,6 +32,7 @@ def setup_strategy():
     else:
         print("Single GPU or CPU is being used.")
         return None
+    
 def main(args):
     # Check GPU availability
     check_gpu()
@@ -44,36 +45,26 @@ def main(args):
         print("################ Loading data using ImageDataGenerator... ########################")
         train_generator, test_generator = load_data(args.data_dir, img_size=(args.img_size, args.img_size), batch_size=args.batch_size)
 
-        print(f"Number of training samples: {train_generator.samples}")
-        print(f"Number of testing samples: {test_generator.samples}")
-
         # Feature extraction
         print("################ Extracting features using VGG16... ################")
         X_train_features, y_train = extract_vgg16_features_from_generator(train_generator, batch_size=args.batch_size)
         X_test_features, y_test = extract_vgg16_features_from_generator(test_generator, batch_size=args.batch_size)
 
-        print(f"Shape of X_train_features: {X_train_features.shape}")
-        print(f"Shape of y_train: {y_train.shape}")
-        print(f"Shape of X_test_features: {X_test_features.shape}")
-        print(f"Shape of y_test: {y_test.shape}")
-
         # Dimensionality reduction with Autoencoder
         print("################ Reducing dimensionality using Autoencoder... ################")
-        X_train_reduced, X_test_reduced = apply_autoencoder(X_train_features, X_test_features, 
+        X_train_reduced, X_test_reduced,autoencoder  = apply_autoencoder(X_train_features, X_test_features, 
                                                             batch_size=args.batch_size, epochs=args.epochs)
-
-        print(f"Shape of X_train_reduced: {X_train_reduced.shape}")
-        print(f"Shape of X_test_reduced: {X_test_reduced.shape}")
-
-        # Verify that X_train_reduced and y_train have the same number of samples
-        assert X_train_reduced.shape[0] == y_train.shape[0], f"Number of samples in X_train_reduced ({X_train_reduced.shape[0]}) does not match y_train ({y_train.shape[0]})"
-        assert X_test_reduced.shape[0] == y_test.shape[0], f"Number of samples in X_test_reduced ({X_test_reduced.shape[0]}) does not match y_test ({y_test.shape[0]})"
 
         # Classification with kNN-SVM
         print("################ Training kNN-SVM classifier... ################")
         classifier = KNNSVMClassifier(k=args.k_neighbors, kernel='linear')
         classifier.fit(X_train_reduced, y_train)
-        
+
+        # Save the SVM model
+        os.makedirs('saved_model', exist_ok=True)
+        joblib.dump(classifier, 'saved_model/knn_svm_classifier.joblib')
+        autoencoder.save('saved_model/autoencoder.h5')
+
         # Prediction
         print("################ Predicting on test data... ################")
         y_pred = classifier.predict(X_test_reduced)
