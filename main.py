@@ -32,7 +32,6 @@ def setup_strategy():
     else:
         print("Single GPU or CPU is being used.")
         return None
-
 def main(args):
     # Check GPU availability
     check_gpu()
@@ -45,21 +44,30 @@ def main(args):
         print("################ Loading data using ImageDataGenerator... ########################")
         train_generator, test_generator = load_data(args.data_dir, img_size=(args.img_size, args.img_size), batch_size=args.batch_size)
 
-        # EDA
-        if args.eda:
-            print("################ Performing Exploratory Data Analysis... ################")
-            visualize_data_distribution(train_generator.classes)
-            plot_sample_images(train_generator)
+        print(f"Number of training samples: {train_generator.samples}")
+        print(f"Number of testing samples: {test_generator.samples}")
 
         # Feature extraction
         print("################ Extracting features using VGG16... ################")
         X_train_features, y_train = extract_vgg16_features_from_generator(train_generator, batch_size=args.batch_size)
         X_test_features, y_test = extract_vgg16_features_from_generator(test_generator, batch_size=args.batch_size)
 
+        print(f"Shape of X_train_features: {X_train_features.shape}")
+        print(f"Shape of y_train: {y_train.shape}")
+        print(f"Shape of X_test_features: {X_test_features.shape}")
+        print(f"Shape of y_test: {y_test.shape}")
+
         # Dimensionality reduction with Autoencoder
         print("################ Reducing dimensionality using Autoencoder... ################")
         X_train_reduced, X_test_reduced = apply_autoencoder(X_train_features, X_test_features, 
                                                             batch_size=args.batch_size, epochs=args.epochs)
+
+        print(f"Shape of X_train_reduced: {X_train_reduced.shape}")
+        print(f"Shape of X_test_reduced: {X_test_reduced.shape}")
+
+        # Verify that X_train_reduced and y_train have the same number of samples
+        assert X_train_reduced.shape[0] == y_train.shape[0], f"Number of samples in X_train_reduced ({X_train_reduced.shape[0]}) does not match y_train ({y_train.shape[0]})"
+        assert X_test_reduced.shape[0] == y_test.shape[0], f"Number of samples in X_test_reduced ({X_test_reduced.shape[0]}) does not match y_test ({y_test.shape[0]})"
 
         # Classification with kNN-SVM
         print("################ Training kNN-SVM classifier... ################")
@@ -76,17 +84,6 @@ def main(args):
         
         print("################ Confusion Matrix: ################")
         print(confusion_matrix(y_test, y_pred))
-        
-        # Optionally plot loss curves
-        if hasattr(classifier, 'history'):
-            plt.figure()
-            plt.plot(classifier.history.history['loss'], label='train_loss')
-            plt.plot(classifier.history.history['val_loss'], label='val_loss')
-            plt.title('Training and Validation Loss')
-            plt.xlabel('Epoch')
-            plt.ylabel('Loss')
-            plt.legend()
-            plt.show()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="################ kNN-SVM with VGG16 Features for COVID-19 Pneumonia Detection ################")
