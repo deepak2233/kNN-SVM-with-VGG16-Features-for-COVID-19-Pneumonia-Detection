@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
 from models.vgg16_feature_extractor import extract_vgg16_features_from_generator
 from models.autoencoder import apply_autoencoder
 from models.knn_svm_classifier import KNNSVMClassifier
@@ -28,8 +28,12 @@ if uploaded_file is not None:
     image_array = img_to_array(image)
     image_array = np.expand_dims(image_array, axis=0)
 
-    # Extract features using VGG16
-    features = extract_vgg16_features_from_generator(image_array)
+    # Preprocess the image for feature extraction
+    datagen = ImageDataGenerator(rescale=1.0/255)
+    generator = datagen.flow(image_array, batch_size=1)
+
+    # Since we are processing only one image, set steps=1 manually
+    features = extract_vgg16_features_from_generator(generator, steps=1)
 
     # Apply Autoencoder for dimensionality reduction
     _, reduced_features = apply_autoencoder(features, features)
@@ -48,7 +52,7 @@ if uploaded_file is not None:
 
     # Display confusion matrix (for demo purposes, here is an example)
     st.write("### Confusion Matrix")
-    true_class = [1]  # Example true class
+    true_class = [1]  # Example true class, adjust this based on real labels if available
     cm = confusion_matrix(true_class, pred_class)  # Replace with actual values for evaluation
     fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, fmt="d", ax=ax)
