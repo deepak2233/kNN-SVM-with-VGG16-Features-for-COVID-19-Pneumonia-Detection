@@ -6,3 +6,5 @@ numpy
 seaborn
 opencv-python
 streamlit
+python-multipart
+uvicorn

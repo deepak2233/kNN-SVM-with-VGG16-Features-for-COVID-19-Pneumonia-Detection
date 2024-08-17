@@ -101,6 +101,7 @@ Upon training, the model outputs classification metrics such as precision, recal
   <img src = './utils/perfomance analysis.png' align = 'center'>
 </p>
 
+---
 
 <p align = 'left'>
   <img src = './utils/curve.png' align = 'center'>
@@ -108,10 +109,22 @@ Upon training, the model outputs classification metrics such as precision, recal
 
 ---
 
-## App
+## Application
+
+  Before running the Streamlit application, ensure that the FastAPI server is running. If it's not running, start it with:
+
+```bash
+
+uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000
+```
+
+---
+
+Then, launch the Streamlit app:
 
 ```bash
 streamlit run app.py
+
 ```
 
 <p align = 'left'>
