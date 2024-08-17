@@ -3,6 +3,8 @@
 ## Overview
 This repository implements a novel COVID-19 Pneumonia detection system using a combination of deep feature extraction from chest X-rays via the VGG16 architecture and a kNN-SVM hybrid model for classification. The project is designed to scale easily for large datasets and features a flexible architecture that allows hyperparameter tuning via command-line arguments.
 
+---
+
 ## Model Pipeline
 
       +------------------------------+
@@ -54,11 +56,15 @@ This repository implements a novel COVID-19 Pneumonia detection system using a c
       |  - F1-Score                  |
       +------------------------------+
 
+---
+
 ## Features
 - **Transfer Learning**: Utilizes the pre-trained VGG16 model for deep feature extraction.
 - **Autoencoder**: Reduces feature dimensionality to optimize classification.
 - **kNN-SVM Hybrid Model**: Combines the strengths of k-Nearest Neighbors (kNN) and Support Vector Machines (SVM) for robust classification.
 - **Command-line Interface**: Supports command-line arguments for batch size, number of epochs, kNN neighbors, SVM regularization parameter, and more.
+
+---
 
 ## Dependencies
 To install the necessary dependencies, run the following command:
@@ -67,6 +73,7 @@ To install the necessary dependencies, run the following command:
 pip install -r requirements.txt
 
 ```
+---
 
 ## Usage
 To run the pipeline, use the following command:
@@ -74,6 +81,7 @@ To run the pipeline, use the following command:
 ```bash
 python main.py --data_dir <path_to_data> --batch_size 64 --epochs 20 --k_neighbors 7 --svm_c 0.5 --eda
 ```
+---
 
 ## Arguments:
 
@@ -84,6 +92,8 @@ python main.py --data_dir <path_to_data> --batch_size 64 --epochs 20 --k_neighbo
     --k_neighbors: Number of neighbors for kNN (default: 5).
     --svm_c: SVM regularization parameter C (default: 1.0).
     --eda: Flag to perform EDA (visualizations).
+
+---
 
 ## Results
 Upon training, the model outputs classification metrics such as precision, recall, F1-score, and accuracy.
@@ -96,7 +106,19 @@ Upon training, the model outputs classification metrics such as precision, recal
   <img src = './utils/curve.png' align = 'center'>
 </p>
 
+---
 
+## App
+
+```bash
+streamlit run app.py
+```
+
+<p align = 'left'>
+  <img src = './utils/app_image.png' align = 'center'>
+</p>
+
+---
 
 ## Citation
 If you use this code for your research, please cite:
