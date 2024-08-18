@@ -133,6 +133,22 @@ streamlit run app.py
 
 ---
 
+## Dockerization
+
+- <b>Build the Docker Image:</b>
+
+```bash
+docker build -t covid19-detection-app .
+```
+
+- <b> Run the Docker Container:</b>
+
+```bash
+docker run -d -p 8000:8000 -p 8501:8501 covid19-detection-app
+```
+
+---
+
 ## Citation
 If you use this code for your research, please cite:
 
