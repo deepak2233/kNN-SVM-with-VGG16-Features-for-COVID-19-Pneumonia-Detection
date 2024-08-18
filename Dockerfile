@@ -18,5 +18,7 @@ EXPOSE 8501
 # Define environment variables
 ENV PYTHONUNBUFFERED=1
 
-# Command to run the FastAPI app using Uvicorn and Streamlit in parallel
-CMD uvicorn backend.api:app --host 0.0.0.0 --port 8000 & streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+# Command to train the model and then start FastAPI and Streamlit
+CMD python3 main.py --data_dir data/ --batch_size 64 --epochs 20 && \
+    uvicorn backend.api:app --host 0.0.0.0 --port 8001 & \
+    streamlit run app.py --server.port 8502 --server.address 0.0.0.0
